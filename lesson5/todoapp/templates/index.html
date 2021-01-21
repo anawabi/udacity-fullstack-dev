@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>My Todo App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+            .hidden{
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <form id="form">
+        
+                <label for="name">Create a To-Do Item</label>
+                <input type="text" id="id" name="id">
+                <input type="text" id="description" name="description">
+                <input type="submit" id="submit" value="Create">
+            </div>
+
+        </form>
+      
+        <div id="error" class="hidden">Something went wrong</div>
+        <ul id="todos">
+            {% for d in data %}
+            <!-- <li> {{d.description}}</li> -->
+            <li> {{d.id}} - {{d.description}}</li>
+            {% endfor%}
+        </ul>
+
+        <script>
+            document.getElementById('form').onsubmit = function(e){
+                e.preventDefault();
+                fetch('/todos/create', {
+                    method : 'POST',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    body : JSON.stringify({
+                        'id': document.getElementById('id').value,
+                        'description': document.getElementById('description').value
+                    }),
+                   
+                })
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(jsonResponse){
+                    const LiItem = document.createElement('LI');
+                    LiItem.innerHTML = jsonResponse['id'];
+                    LiItem.innerHTML = jsonResponse['description'];
+                    document.getElementById('todos').appendChild(LiItem)
+                    document.getElementById('error').className ='hidden';
+                })
+                .catch(function(){
+                    document.getElementById('error').className = '';
+                })
+            }
+        </script>
+
+        <script src="" async defer></script>
+    </body>
+</html>
