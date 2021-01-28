@@ -21,6 +21,7 @@ class Todo(db.Model):
 
 # db.create_all()
 
+# This function gets the todo item completed status along wiht the todo item ID and updates the todo status in DB, the completed value would be either True or False coming for the fron end.
 @app.route('/todos/<todo_id>/set-completed', methods=['POST'])
 def set_completed_todo(todo_id):
    
@@ -36,6 +37,19 @@ def set_completed_todo(todo_id):
     finally:
         db.session.close()
     return redirect(url_for('index'))
+
+@app.route('/todos/<todo_id>', methods=['DELETE'])
+def delete_todo(todo_id):
+  try:
+    Todo.query.filter_by(id=todo_id).delete()
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+#   return jsonify({ 'success': True })
+  return redirect(url_for('index'))
+
 
 
 @app.route('/todos/create', methods=['POST'])
